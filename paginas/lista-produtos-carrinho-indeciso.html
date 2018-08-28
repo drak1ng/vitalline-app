@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2012-2014 Adobe Systems Incorporated. All rights reserved.
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+    http://www.apache.org/licenses/LICENSE-2.0
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="msapplication-tap-highlight" content="no" />
+		<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=medium-dpi" />
+        <link rel="stylesheet" type="text/css" href="../css/index.css" />
+        <link rel="stylesheet" type="text/css" href="../css/jquery.mobile-1.4.5.min.css" />
+        <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
+        <title>Vitalline</title>
+		<script type="text/javascript" src="../js/jquery.min.js"></script>
+		<script type="text/javascript" src="../js/jquery.mobile-1.4.5.min.js"></script>
+		<script type="text/javascript" src="../js/cordova.js"></script>
+	</head>
+    <body>
+	    
+	    <div data-role="page">
+
+		    <div class="topo">
+			    <div class="logotipo">
+				    <div style="min-width:10px; float:left; color:#000; padding:10px 10px; margin:-10px 0px -10px -10px;" id="bt_lista_produtos_carrinho_indeciso_voltar"><i class="fa fa-chevron-left" aria-hidden="true"></i></div>
+				    <div style="min-width:10px; float:right; color:#000;" class="topo2-menu"><i class="fa fa-bars" aria-hidden="true"></i></div>
+				    <div style="margin:0px 80px; text-align:center; color:#000; font-family:'roboto';"><b>CLIENTE INDECISO<b></div>
+				</div>
+		    </div>
+
+			<div role="main" class="ui-content" style="text-align:center;">
+				<div class="conteudo" id="lista_produtos_carrinho_indeciso_conteudo">
+					<div style="padding-top:120px; text-align:center; font-size:13px; color:#FFF;">
+						<img src="../img/ajax-loader.gif" /><br><br>
+						Aguarde carregando...
+					</div>
+				</div>
+			</div>
+			
+			<script>
+				
+				var tipo_usuarios = window.localStorage.getItem('tipo_usuarios');
+				var id_usuarios = window.localStorage.getItem('id_usuarios');
+				var id_cliente = window.localStorage.getItem('id_cliente');
+				var id_produto = window.localStorage.getItem('id_produto');
+				var latitude = window.localStorage.getItem('latitude');
+				var longitude = window.localStorage.getItem('longitude');
+				
+				$('.topo2-menu').click(function(){ $('.menu-container').show(); });
+				
+				$("#bt_lista_produtos_carrinho_indeciso_voltar").click(function(){
+					$.mobile.changePage("lista-produtos-carrinho.html", { transition: "fade", changeHash: false });
+				});
+				
+				$.get("http://crm.vitalline.com.br/app_api/lista-produtos-carrinho-indeciso.php", { tipo_usuarios:tipo_usuarios, id_usuarios:id_usuarios, id:id_cliente, id_produto:id_produto, latitude:latitude, longitude:longitude }, function(data){ $('#lista_produtos_carrinho_indeciso_conteudo').html(data); });
+				
+			</script>
+		
+		</div>
+    </body>
+</html>

@@ -1,0 +1,814 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+ 
+ @import url('https://fonts.googleapis.com/css?family=Roboto:300,500');
+ 
+* {
+    -webkit-tap-highlight-color: rgba(0,0,0,0); /* make transparent link selection, adjust last value opacity 0 to 1.0 */
+}
+
+button { -webkit-appearance: none; }
+input[type=button] { -webkit-appearance: none; }
+input[type=submit] { -webkit-appearance: none; }
+
+body {
+    -webkit-touch-callout: none;                /* prevent callout to copy image, etc when tap to hold */
+    -webkit-text-size-adjust: none;             /* prevent webkit from resizing text to fit */
+    -webkit-user-select: none;                  /* prevent copy paste, to allow, change 'none' to 'text' */
+    background-color:#FFF !important;
+    font-family:'Roboto', 'HelveticaNeue-Light', 'HelveticaNeue', Helvetica, Arial, sans-serif;
+    font-size:12px;
+    height:100%;
+    margin:0px;
+    padding:0px;
+    text-transform:uppercase;
+    width:100%;
+    
+}
+
+/* Portrait layout (default) */
+.app {
+    background:url(../img/cema.png) no-repeat center top; /* 170px x 200px */
+    position:absolute;             /* position in the center of the screen */
+    left:50%;
+    top:50%;
+    height:50px;                   /* text area height */
+    width:225px;                   /* text area width */
+    text-align:center;
+    padding:180px 0px 0px 0px;     /* image height is 200px (bottom 20px are overlapped with text) */
+    margin:-115px 0px 0px -112px;  /* offset vertical: half of image height and text area height */
+                                   /* offset horizontal: half of text area width */
+}
+
+.menu-container { width:100%; height:100%; position:fixed; top:0px; left:0px; background-color:rgba(0,0,0,0.7); z-index:9999; display:none; }
+.menu-container-externo { width:calc(100% - 200px); height:100%; float:left;  }
+.menu-container-caixa { width:200px; height:100%; float:right; background:#202020; }
+.menu-container-caixa-logo	{ width:100px; height:100px; background:url(../img/logo_sq.png) center center no-repeat; margin:20px auto; background-size:cover; margin-top:30px; }
+.menu-container-caixa-nome	{ text-align:center; font-family:'roboto'; padding-top:0px; font-size:20px; padding-bottom:30px; }
+.menu-container-caixa-menu1	{ font-family:'roboto'; margin:0px auto; width:140px; padding:12px 0px 12px 0px; text-align:center; text-transform:none; color:#FFF; }
+.menu-container-caixa-menu2	{ font-family:'roboto'; margin:0px auto; width:140px; padding:12px 0px 12px 0px; text-align:center; text-transform:none; color:#FFF; }
+.menu-container-caixa-menu3	{ font-family:'roboto'; margin:0px auto; width:140px; padding:12px 0px 12px 0px; text-align:center; text-transform:none; color:#FFF; }
+.menu-container-caixa-menu4	{ font-family:'roboto'; margin:0px auto; width:140px; padding:12px 0px 12px 0px; text-align:center; text-transform:none; color:#FFF; }
+.menu-container-caixa-menu5	{ font-family:'roboto'; margin:0px auto; width:140px; padding:12px 0px 12px 0px; text-align:center; text-transform:none; color:#FFF; }
+.menu-container-caixa-menu6	{ font-family:'roboto'; margin:0px auto; width:140px; padding:12px 0px 12px 0px; text-align:center; text-transform:none; color:#FFF; }
+.menu-container-caixa-menu7	{ font-family:'roboto'; margin:0px auto; width:140px; padding:12px 0px 12px 0px; text-align:center; text-transform:none; color:#FFF; }
+
+.conteudo			{ margin-top:35px; padding:20px 10px; text-transform:none; font-family:'roboto'; text-align:left; font-size:15px; font-weight:300; line-height:24px; }
+
+.page				{ background:#FFF !important; }
+
+/* Landscape layout (with min-width) */
+@media screen and (min-aspect-ratio: 1/1) and (min-width:400px) {
+    .app {
+        background-position:left center;
+        padding:75px 0px 75px 170px;  /* padding-top + padding-bottom + text area = image height */
+        margin:-90px 0px 0px -198px;  /* offset vertical: half of image height */
+                                      /* offset horizontal: half of image width and text area width */
+    }
+}
+
+h1 {
+    font-size:24px;
+    font-weight:normal;
+    margin:0px;
+    overflow:visible;
+    padding:0px;
+    text-align:center;
+}
+
+.event {
+    border-radius:0px;
+    -webkit-border-radius:0px;
+    color:#FFFFFF;
+    font-size:12px;
+    margin:0px 30px;
+    padding:2px 0px;
+}
+
+.event.listening {
+    background-color:#333333;
+    display:block;
+}
+
+.event.received {
+    background-color:#4B946A;
+    display:none;
+}
+
+@keyframes fade {
+    from { opacity: 1.0; }
+    50% { opacity: 0.4; }
+    to { opacity: 1.0; }
+}
+ 
+@-webkit-keyframes fade {
+    from { opacity: 1.0; }
+    50% { opacity: 0.4; }
+    to { opacity: 1.0; }
+}
+ 
+.blink {
+    animation:fade 3000ms infinite;
+    -webkit-animation:fade 3000ms infinite;
+}
+
+.ui-page {
+	background:url(../img/002.jpg) center center no-repeat #2d2d2d !important;
+	background-size:cover !important;
+}
+.ui-input-text {
+	background-color: transparent !important;
+	border:0px !important;
+}
+
+
+.carregando {
+	padding:230px 0px 200px 0px;
+	background:url(../img/loading.gif) center center no-repeat;
+	color:#777;
+	font-size:12px;
+	text-align:center;
+}
+
+.carregando2 {
+	padding:130px 0px 100px 0px;
+	background:url(../img/loading2.gif) center center no-repeat;
+	color:#FFF;
+	font-size:12px;
+	text-align:center;
+	text-shadow: 0 1px 0 #000000;
+}
+
+.topo {
+	width:100%;
+	position:fixed;
+	top:0px;
+	left:0px;
+	z-index: 999;
+}
+
+.topo i						{ font-size:36px; margin-top:-10px; }
+.topo .fa-chevron-left		{ margin-top:-8px; }
+
+.topo .logotipo {
+	background:#ABCE43;
+	text-align:center;
+	padding:15px 10px 10px 10px;
+	text-shadow: none;
+	text-transform: uppercase;
+}
+
+.topo .titulo_tela {
+	text-align:center;
+	font-weight:bold;
+	color:#FFF;
+	background:#303030;
+	padding:8px 0px 8px 0px;
+	font-size:18px;
+	font-weight: normal;
+	text-shadow:none !important;
+}
+
+.botoes-rodape {
+	width:100%;
+	height:66px;
+	position:fixed;
+	z-index:999;
+	bottom:0px;
+	left:0px;
+	background:#FFF;
+	border-top:1px solid #214629;
+	padding:0px
+}
+
+.botoes-rodape-bloco1 {
+	width:25%;
+	float:left;
+	text-align:center;
+	font-size:13px;
+	color:#000;
+	text-transform:none;
+	padding-top:46px;
+	padding-bottom:4px;
+	background:center 10px no-repeat;
+	background-size:30px;
+	text-shadow:none !important;
+}
+
+.botoes-rodape-bloco2 {
+	width:25%;
+	float:left;
+	text-align:center;
+	font-size:13px;
+	color:#003263;
+	text-transform:none;
+	padding-top:46px;
+	padding-bottom:4px;
+	background:center 10px no-repeat #ecfded;
+	background-size:30px;
+	text-shadow:none !important;
+}
+
+.bt_voltar {
+	min-width:10px;
+	float:left;
+	font-size:12px;
+	font-weight:normal;
+	padding:5px 0px 0px 10px;
+}
+
+#contato_mensagem {
+	height:130px !important;
+}
+
+.ui-content { margin-top:20px !important; }
+
+.mensagem {
+	width:100%;
+	height:100%;
+	background-color:rgba(255,255,255,0.8);
+	position:fixed;
+	z-index:9999;
+	top:0;
+	left:0;
+	display:none;
+}
+
+.mensagem .mensagem_ajax {
+	width:380px;
+	min-height:100px;
+	position:absolute;
+	margin-top:-80px;
+	margin-left:-190px;
+	top:50%;
+	left:50%;
+	background:#FFF;
+	-webkit-box-shadow: 0px 1px 10px 4px rgba(0, 0, 0, 0.3);
+	box-shadow: 0px 1px 10px 4px rgba(0, 0, 0, 0.3);
+	-webkit-border-radius:6px;
+	border-radius:6px;
+	font-family:verdana;
+	font-size:12px;
+	color:#555;
+}
+
+.mensagem .botao_alerta {
+	border:1px solid #666;
+	background:#FFF;
+	min-width:10px;
+	padding:7px 10px;
+	margin:5px;
+	-webkit-border-radius:4px;
+	border-radius:4px;
+	font-family:verdana;
+	font-size:12px;
+	color:#333;
+	cursor:pointer;
+}
+
+.mensagem .botao_alerta:hover {
+	background:#666;
+	color:#FFF;
+}
+
+.barra-ecrever-mensagem	{
+	position:fixed;
+	bottom: 0px;
+	right: 0px;
+	background:#FFF;
+	border-top:1px solid #CCC;
+	height:50px;
+	width: calc(100% - 0px);
+}
+
+.barra-ecrever-mensagem input[type=text] {
+	width: calc(100% - 125px);
+	border:0px;
+	background:#FFF;
+	padding:16px;
+	font-family:arial;
+	font-size:14px;
+	outline:none;
+}
+
+.barra-ecrever-mensagem input[type=submit] {
+	border-radius:6px;
+	border:0px;
+	background:#671464;
+	padding: 8px 0px;
+	text-align:center;
+    font-family: 'Droid Sans', sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    color: #FFF;
+    width:66px;
+    float:right;
+    margin:8px 7px 0px 0px
+}
+
+.mensagens-bloco {
+	height: calc(100% - 71px);
+	padding:10px;
+	overflow-y: scroll;
+	line-height:18px;
+}
+
+.mensagens-bloco-mensagens1 {
+	border-radius:4px;
+	border:1px solid #CCC;
+	background:#FFF;
+	padding:5px 10px;
+	min-width:10px;
+	max-width:260px;
+	margin:5px 0px;
+	float:left;
+}
+
+.mensagens-bloco-mensagens1 b {
+	margin:0px;
+	padding:0px;
+}
+
+.mensagens-bloco-mensagens1 p {
+	margin:0px;
+	padding:5px 0px 5px 0px;
+}
+
+.mensagens-bloco-mensagens1 span {
+	margin:0px;
+	padding:0px;
+	font-size:10px;
+	color:#999;
+}
+
+.mensagens-bloco-mensagens2 {
+	border-radius:4px;
+	border:1px solid #d2c1d0;
+	background:#f0e7ef;
+	padding:5px 10px;
+	min-width:10px;
+	max-width:260px;
+	margin:5px 0px;
+	float:right;
+}
+
+.mensagens-bloco-mensagens2 b {
+	margin:0px;
+	padding:0px;
+}
+
+.mensagens-bloco-mensagens2 p {
+	margin:0px;
+	padding:5px 0px 5px 0px;
+}
+
+.mensagens-bloco-mensagens2 span {
+	margin:0px;
+	padding:0px;
+	font-size:10px;
+	color:#999;
+}
+
+.clearfix:after {
+  content: ".";
+  display: block;
+  clear: both;
+  visibility: hidden;
+  line-height: 0;
+  height: 0;
+}
+.clearfix {
+  display: inline-block;
+}
+html[xmlns] .clearfix {
+  display: block;
+}
+* html .clearfix {
+  height: 1%;
+}
+.noselect {
+  -webkit-user-select: none;
+  /* Chrome/Safari */
+  -moz-user-select: none;
+  /* Firefox */
+  -ms-user-select: none;
+  /* IE10+ */
+}
+.left-align {
+  text-align: left;
+}
+.right-align {
+  text-align: right;
+}
+.cal1 {
+  margin: 0px auto;
+  font-size: 14px;
+  text-shadow:none;
+  margin:10px -15px -10px -15px;
+}
+.cal1 .clndr .clndr-controls {
+  display: inline-block;
+  width:calc(100% - 20px);
+  position: relative;
+  margin-bottom: 0px;
+  background:#ebebeb;
+  color:#666;
+  padding:10px;
+}
+.cal1 .clndr .clndr-controls .month {
+  float: left;
+  width: calc(100% - 80px);
+  text-align: center;
+}
+.cal1 .clndr .clndr-controls .clndr-control-button {
+  float: left;
+  width: 40px;
+}
+.cal1 .clndr .clndr-controls .clndr-control-button.rightalign {
+  text-align: right;
+  width: 40px;
+}
+.cal1 .clndr .clndr-controls .clndr-control-button .clndr-next-button {
+  cursor: pointer;
+  -webkit-user-select: none;
+  /* Chrome/Safari */
+  -moz-user-select: none;
+  /* Firefox */
+  -ms-user-select: none;
+  /* IE10+ */
+}
+.cal1 .clndr .clndr-controls .clndr-control-button .clndr-next-button:hover {
+  background: #ddd;
+}
+.cal1 .clndr .clndr-controls .clndr-control-button .clndr-next-button.inactive {
+  opacity: 0.5;
+}
+.cal1 .clndr .clndr-controls .clndr-control-button .clndr-next-button.inactive:hover {
+  background: none;
+  cursor: default;
+}
+.cal1 .clndr .clndr-controls .clndr-control-button .clndr-previous-button {
+  cursor: pointer;
+  -webkit-user-select: none;
+  /* Chrome/Safari */
+  -moz-user-select: none;
+  /* Firefox */
+  -ms-user-select: none;
+  /* IE10+ */
+}
+.cal1 .clndr .clndr-controls .clndr-control-button .clndr-previous-button:hover {
+  background: #ddd;
+}
+.cal1 .clndr .clndr-controls .clndr-control-button .clndr-previous-button.inactive {
+  opacity: 0.5;
+}
+.cal1 .clndr .clndr-controls .clndr-control-button .clndr-previous-button.inactive:hover {
+  background: none;
+  cursor: default;
+}
+.cal1 .clndr .clndr-table {
+  table-layout: fixed;
+  width: 100%;
+  margin-top:-4px;
+}
+.cal1 .clndr .clndr-table .header-days {
+  height: 30px;
+  font-size: 10px;
+  background: #FFF;
+}
+.cal1 .clndr .clndr-table .header-days .header-day {
+  vertical-align: middle;
+  text-align: center;
+  border-left: 0px solid #000000;
+  border-top: 0px solid #000000;
+  color: #333;
+}
+.cal1 .clndr .clndr-table .header-days .header-day:last-child {
+  border-right: 0px solid #000000;
+}
+.cal1 .clndr .clndr-table tr {
+  height: 40px;
+}
+.cal1 .clndr .clndr-table tr td {
+  vertical-align: center;
+  text-align:center;
+}
+.cal1 .clndr .clndr-table tr .day {
+  border-left: 0px solid #000000;
+  border-top: 0px solid #000000;
+  width: 100%;
+  height: inherit;
+  background:#ebebeb;
+  color:#999;
+}
+.cal1 .clndr .clndr-table tr .day:hover {
+  background: #CCC !important;
+  color:#000 !important;
+}
+.cal1 .clndr .clndr-table tr .day.today,
+.cal1 .clndr .clndr-table tr .day.my-today {
+  background: #e0e0e0;
+  color: #999;
+  font-weight:bold;
+}
+.cal1 .clndr .clndr-table tr .day.today:hover,
+.cal1 .clndr .clndr-table tr .day.my-today:hover {
+  background: #444;
+  color: #fff;
+  font-weight:bold;
+}
+.cal1 .clndr .clndr-table tr .day.today.event,
+.cal1 .clndr .clndr-table tr .day.my-today.event {
+  background: #444;
+  color: #fff;
+  font-weight:bold;
+}
+.cal1 .clndr .clndr-table tr .day.event,
+.cal1 .clndr .clndr-table tr .day.my-event {
+  background: #444;
+  color: #fff;
+  font-weight:bold;
+}
+.cal1 .clndr .clndr-table tr .day.event:hover,
+.cal1 .clndr .clndr-table tr .day.my-event:hover {
+  background: #444;
+  color: #fff;
+  font-weight:bold;
+}
+.cal1 .clndr .clndr-table tr .day.inactive,
+.cal1 .clndr .clndr-table tr .day.my-inactive {
+  background: #333;
+}
+.cal1 .clndr .clndr-table tr .day:last-child {
+  border-right: 0px solid #000000;
+}
+.cal1 .clndr .clndr-table tr .day .day-contents {
+  box-sizing: border-box;
+  padding: 8px;
+  font-size: 14px;
+  text-align: center;
+}
+.cal1 .clndr .clndr-table tr .empty,
+.cal1 .clndr .clndr-table tr .adjacent-month,
+.cal1 .clndr .clndr-table tr .my-empty,
+.cal1 .clndr .clndr-table tr .my-adjacent-month {
+  border-left: 0px solid #000000;
+  border-top: 0px solid #000000;
+  width: 100%;
+  height: inherit;
+  background: #d0d0d0;
+}
+.cal1 .clndr .clndr-table tr .empty:hover,
+.cal1 .clndr .clndr-table tr .adjacent-month:hover,
+.cal1 .clndr .clndr-table tr .my-empty:hover,
+.cal1 .clndr .clndr-table tr .my-adjacent-month:hover {
+  background: #333;
+}
+.cal1 .clndr .clndr-table tr .empty:last-child,
+.cal1 .clndr .clndr-table tr .adjacent-month:last-child,
+.cal1 .clndr .clndr-table tr .my-empty:last-child,
+.cal1 .clndr .clndr-table tr .my-adjacent-month:last-child {
+  border-right: 0px solid #000000;
+}
+.cal1 .clndr .clndr-table tr:last-child .day,
+.cal1 .clndr .clndr-table tr:last-child .my-day {
+  border-bottom: 0px solid #000000;
+}
+.cal1 .clndr .clndr-table tr:last-child .empty,
+.cal1 .clndr .clndr-table tr:last-child .my-empty {
+  border-bottom: 0px solid #000000;
+}
+cal2 {
+  margin: 0px auto;
+  max-width: 600px;
+  font-size: 14px;
+  text-shadow:none;
+}
+.cal2 .clndr .clndr-controls {
+  display: inline-block;
+  width:calc(100% - 20px);
+  position: relative;
+  margin-bottom: 0px;
+  background:#671464;
+  color:#FFF;
+  padding:10px;
+}
+.cal2 .clndr .clndr-controls .month {
+  float: left;
+  width: calc(100% - 80px);
+  text-align: center;
+}
+.cal2 .clndr .clndr-controls .clndr-control-button {
+  float: left;
+  width: 40px;
+}
+.cal2 .clndr .clndr-controls .clndr-control-button.rightalign {
+  text-align: right;
+  width: 40px;
+}
+.cal2 .clndr .clndr-controls .clndr-control-button .clndr-next-button {
+  cursor: pointer;
+  -webkit-user-select: none;
+  /* Chrome/Safari */
+  -moz-user-select: none;
+  /* Firefox */
+  -ms-user-select: none;
+  /* IE10+ */
+}
+.cal2 .clndr .clndr-controls .clndr-control-button .clndr-next-button:hover {
+  background: #ddd;
+}
+.cal2 .clndr .clndr-controls .clndr-control-button .clndr-next-button.inactive {
+  opacity: 0.5;
+}
+.cal2 .clndr .clndr-controls .clndr-control-button .clndr-next-button.inactive:hover {
+  background: none;
+  cursor: default;
+}
+.cal2 .clndr .clndr-controls .clndr-control-button .clndr-previous-button {
+  cursor: pointer;
+  -webkit-user-select: none;
+  /* Chrome/Safari */
+  -moz-user-select: none;
+  /* Firefox */
+  -ms-user-select: none;
+  /* IE10+ */
+}
+.cal2 .clndr .clndr-controls .clndr-control-button .clndr-previous-button:hover {
+  background: #ddd;
+}
+.cal2 .clndr .clndr-controls .clndr-control-button .clndr-previous-button.inactive {
+  opacity: 0.5;
+}
+.cal2 .clndr .clndr-controls .clndr-control-button .clndr-previous-button.inactive:hover {
+  background: none;
+  cursor: default;
+}
+.cal2 .clndr .clndr-table {
+  table-layout: fixed;
+  width: 100%;
+  margin-top:-4px;
+}
+.cal2 .clndr .clndr-table .header-days {
+  height: 30px;
+  font-size: 10px;
+  background: #FFF;
+}
+.cal2 .clndr .clndr-table .header-days .header-day {
+  vertical-align: middle;
+  text-align: center;
+  border-left: 0px solid #000000;
+  border-top: 0px solid #000000;
+  color: #333;
+}
+.cal2 .clndr .clndr-table .header-days .header-day:last-child {
+  border-right: 0px solid #000000;
+}
+.cal2 .clndr .clndr-table tr {
+  height: 40px;
+}
+.cal2 .clndr .clndr-table tr td {
+  vertical-align: center;
+  text-align:center;
+}
+.cal2 .clndr .clndr-table tr .day {
+  border-left: 0px solid #000000;
+  border-top: 0px solid #000000;
+  width: 100%;
+  height: inherit;
+  background:#333;
+  color:#FFF;
+}
+.cal2 .clndr .clndr-table tr .day:hover {
+  background: #CCC !important;
+  color:#000 !important;
+}
+.cal2 .clndr .clndr-table tr .day.today,
+.cal2 .clndr .clndr-table tr .day.my-today {
+  background: #444;
+  color: #fff;
+  font-weight:bold;
+}
+.cal2 .clndr .clndr-table tr .day.today:hover,
+.cal2 .clndr .clndr-table tr .day.my-today:hover {
+  background: #444;
+  color: #fff;
+  font-weight:bold;
+}
+.cal2 .clndr .clndr-table tr .day.today.event,
+.cal2 .clndr .clndr-table tr .day.my-today.event {
+  background: #444;
+  color: #fff;
+  font-weight:bold;
+}
+.cal2 .clndr .clndr-table tr .day.event,
+.cal2 .clndr .clndr-table tr .day.my-event {
+  background: #444;
+  color: #fff;
+  font-weight:bold;
+}
+.cal2 .clndr .clndr-table tr .day.event:hover,
+.cal2 .clndr .clndr-table tr .day.my-event:hover {
+  background: #444;
+  color: #fff;
+  font-weight:bold;
+}
+.cal2 .clndr .clndr-table tr .day.inactive,
+.cal2 .clndr .clndr-table tr .day.my-inactive {
+  background: #333;
+}
+.cal2 .clndr .clndr-table tr .day:last-child {
+  border-right: 0px solid #000000;
+}
+.cal2 .clndr .clndr-table tr .day .day-contents {
+  box-sizing: border-box;
+  padding: 8px;
+  font-size: 14px;
+  text-align: center;
+}
+.cal2 .clndr .clndr-table tr .empty,
+.cal2 .clndr .clndr-table tr .adjacent-month,
+.cal2 .clndr .clndr-table tr .my-empty,
+.cal2 .clndr .clndr-table tr .my-adjacent-month {
+  border-left: 0px solid #000000;
+  border-top: 0px solid #000000;
+  width: 100%;
+  height: inherit;
+  background: #222;
+}
+.cal2 .clndr .clndr-table tr .empty:hover,
+.cal2 .clndr .clndr-table tr .adjacent-month:hover,
+.cal2 .clndr .clndr-table tr .my-empty:hover,
+.cal2 .clndr .clndr-table tr .my-adjacent-month:hover {
+  background: #333;
+}
+.cal2 .clndr .clndr-table tr .empty:last-child,
+.cal2 .clndr .clndr-table tr .adjacent-month:last-child,
+.cal2 .clndr .clndr-table tr .my-empty:last-child,
+.cal2 .clndr .clndr-table tr .my-adjacent-month:last-child {
+  border-right: 0px solid #000000;
+}
+.cal2 .clndr .clndr-table tr:last-child .day,
+.cal2 .clndr .clndr-table tr:last-child .my-day {
+  border-bottom: 0px solid #000000;
+}
+.cal2 .clndr .clndr-table tr:last-child .empty,
+.cal2 .clndr .clndr-table tr:last-child .my-empty {
+  border-bottom: 0px solid #000000;
+}
+.clndr-next-button,
+.clndr-previous-button,
+.clndr-next-year-button,
+.clndr-previous-year-button {
+  -webkit-user-select: none;
+  /* Chrome/Safari */
+  -moz-user-select: none;
+  /* Firefox */
+  -ms-user-select: none;
+  /* IE10+ */
+}
+.clndr-next-button.inactive,
+.clndr-previous-button.inactive,
+.clndr-next-year-button.inactive,
+.clndr-previous-year-button.inactive {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.clndr-next-button {
+	text-align:center;
+	width:38px;
+	height:18px;
+	padding:10px 0px;
+	background:#e0e0e0;
+	display:block;
+	float:right;
+	margin:-10px;
+}
+
+.clndr-previous-button {
+	text-align:center;
+	width:38px;
+	height:18px;
+	padding:10px 0px;
+	background:#e0e0e0;
+	display:block;
+	float:left;
+	margin:-10px;
+}

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2012-2014 Adobe Systems Incorporated. All rights reserved.
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="msapplication-tap-highlight" content="no" />
+		<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=medium-dpi" />
+        <link rel="stylesheet" type="text/css" href="css/index.css" />
+        <link rel="stylesheet" type="text/css" href="css/jquery.mobile-1.4.5.min.css" />
+        <link rel="stylesheet" type="text/css" href="css/rating.min.css" />
+        <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css" />
+        <link rel="stylesheet" type="text/css" href="css/jquery.fancybox.min.css" />
+        <title>Vitalline</title>
+		<script type="text/javascript" src="cordova.js"></script>
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+		<script type="text/javascript" src="js/jquery.maskedinput.min.js"></script>
+		<script type="text/javascript" src="js/jquery.mask.min.js"></script>
+		<script type="text/javascript" src="js/moment-with-locales.js"></script>
+		<script type="text/javascript" src="js/clndr.min.js"></script>
+		<script type="text/javascript" src="js/underscore.js"></script>
+		<script type="text/javascript" src="js/rating.min.js"></script>
+		<script type="text/javascript" src="js/jquery.fancybox.min.js"></script>
+		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAS43qBsKsxeRK93aMPtN4eQaaQk0Lg60g"></script>
+	</head>
+    <body>
+	    <div style='display:none;'><iframe width='320' height='30' id='iframe_foto' name='iframe_foto' src='' frameborder='0' allowfullscreen></iframe></div>
+		<div id="checarConexao" style="width:100%; height:100%; position:fixed; top:0px; left:0px; z-index:99999; background-color:rgba(0,0,0,0.9); text-align:center; color:#FFF; display:none;"><br><br><br><br><img src="./img/warning.png" width="200"><br><br><br><br>SEM CONEXÃO NO MOMENTO!</div>
+		<div id="aguardePagamento" style="width:100%; height:100%; position:fixed; top:0px; left:0px; z-index:99999; background-color:rgba(0,0,0,0.9); text-align:center; color:#FFF; display:none;"><br><br><br><br><br><br><br><br>AGUARDE!</div>
+		<div class="menu-container">
+		    <div class="menu-container-externo"></div>
+		    <div class="menu-container-caixa">
+			    <div class="menu-container-caixa-logo"></div>
+			    <div class="menu-container-caixa-menu1">Home</div>
+			    <div class="menu-container-caixa-menu2">Agenda</div>
+			    <div class="menu-container-caixa-menu3">Roteiro</div>
+			    <!--<div class="menu-container-caixa-menu4">Clientes</div>-->
+			    <div class="menu-container-caixa-menu5">Pedidos</div>
+			    <div class="menu-container-caixa-menu8">Recusados</div>
+			    <!--<div class="menu-container-caixa-menu6">Relatórios</div>-->
+			    <div class="menu-container-caixa-menu7">Sair</div>
+		    </div>
+		</div>
+		<iframe id="iframe_forms" name="iframe_forms" width="0" height="0"></iframe>
+			
+	    <div data-role="page"></div>
+			<script>
+				
+				$('.menu-container-externo').click(function(){
+					$('.menu-container').hide();
+				});
+				
+				$(".menu-container-caixa-menu1").click(function(){ $.mobile.changePage("home.html", { transition: "fade", changeHash: false }); $('.menu-container').hide(); });
+				$(".menu-container-caixa-menu2").click(function(){ $.mobile.changePage("agenda.html", { transition: "fade", changeHash: false }); $('.menu-container').hide(); });
+				$(".menu-container-caixa-menu3").click(function(){ $.mobile.changePage("roteiro.html", { transition: "fade", changeHash: false }); $('.menu-container').hide(); });
+				$(".menu-container-caixa-menu4").click(function(){ $.mobile.changePage("clientes.html", { transition: "fade", changeHash: false }); $('.menu-container').hide(); });
+				$(".menu-container-caixa-menu5").click(function(){ $.mobile.changePage("pedidos.html", { transition: "fade", changeHash: false }); $('.menu-container').hide(); });
+				$(".menu-container-caixa-menu6").click(function(){ $.mobile.changePage("relatorio.html", { transition: "fade", changeHash: false }); $('.menu-container').hide(); });
+				$(".menu-container-caixa-menu7").click(function(){ $('.menu-container').hide(); window.localStorage.setItem('id_usuarios',''); $.mobile.changePage("login.html", { transition: "fade", changeHash: false }); });
+				$(".menu-container-caixa-menu8").click(function(){ $.mobile.changePage("pedidos-pendentes.html", { transition: "fade", changeHash: false }); $('.menu-container').hide(); });
+				
+				
+				var jaFicouOffline = 0;
+				
+				document.addEventListener("deviceready", onDeviceReady, true);
+				document.addEventListener("online", onOnLine, true);
+				document.addEventListener("offline", onOffLine, true);
+				
+		        function onDeviceReady() {
+		            setTimeout(carregar, 500);
+		            
+					console.log('calling push init');
+			        var push = PushNotification.init({
+			            "android": {
+			                "senderID": "652450127407"
+			            },
+			            "browser": {},
+			            "ios": {
+			                "sound": true,
+			                "vibration": true,
+			                "badge": true
+			            },
+			            "windows": {}
+			        });
+			
+			        push.on('registration', function(data) {
+			            console.log('registration event: ' + data.registrationId);
+		                localStorage.setItem('registrationId', data.registrationId);
+			        });
+			
+			        push.on('error', function(e) {
+				        alert("push error = " + e.message);
+			            console.log("push error = " + e.message);
+			        });
+			
+			        push.on('notification', function(data) {
+			            console.log('notification event');
+			            if(data.additionalData.type=="orcamento"){
+							window.localStorage.setItem('id_orcamento',data.additionalData.codigo);
+							$.mobile.changePage("orcamentos-interno.html", { transition: "fade", changeHash: false });
+			            }else if(data.additionalData.type=="mensagem"){
+							window.localStorage.setItem('id_mensagem',data.additionalData.codigo);
+							$.mobile.changePage("mensagens-interno.html", { transition: "fade", changeHash: false });
+			            }else{
+				            $.mobile.changePage("home.html", { transition: "fade", changeHash: false });
+			            }
+			    	});
+			    	
+		        }
+		        
+		        function onOnLine(){
+		            $('#checarConexao').hide();
+		            if(jaFicouOffline==1){
+			            jaFicouOffline=0;
+				        var id_usuarios = window.localStorage.getItem('id_usuarios');
+						if(id_usuarios!="" && id_usuarios!=null){
+							$.mobile.changePage("./paginas/home.html", { transition: "none", changeHash: false });
+						}else{
+							$.mobile.changePage("./paginas/login.html", { transition: "none", changeHash: false });	
+						}
+			        }
+		        }
+		        
+		        function onOffLine(){
+		            $('#checarConexao').show();
+		            jaFicouOffline = 1;
+		        }
+		        
+		        function carregar(){
+			        var id_usuarios = window.localStorage.getItem('id_usuarios');
+					if(id_usuarios!="" && id_usuarios!=null){
+						$.mobile.changePage("./paginas/home.html", { transition: "none", changeHash: false });
+					}else{
+						$.mobile.changePage("./paginas/login.html", { transition: "none", changeHash: false });	
+					}
+				}
+				
+				alert = function (txt) {
+					navigator.notification.alert(txt,null,'AVISO','OK');
+				}
+				
+				confirm = function (txt) {
+					navigator.notification.confirm(txt,null,'AVISO','OK');
+				}
+				
+				document.addEventListener("backbutton", function(e){
+					var id_usuarios = window.localStorage.getItem('id_usuarios');
+					if(id_usuarios!="" && id_usuarios!=null){
+						$.mobile.changePage("home.html", { transition: "none", changeHash: false });
+					}
+				    e.preventDefault();
+				}, false);
+				
+				
+				
+				
+				var onSuccess = function(position) {
+					window.localStorage.setItem('latitude',position.coords.latitude);
+					window.localStorage.setItem('longitude',position.coords.longitude);
+					//alert('sucesso!');
+				};
+	
+				function onError(error){
+					//alert('ERROR(' + error.code + '): ' + error.message);
+				}
+	
+				function informarPosicao(){
+					navigator.geolocation.getCurrentPosition(onSuccess, onError, {timeout: 10000, enableHighAccuracy: true});
+				}
+				
+				setInterval(informarPosicao, 10000);
+				
+				informarPosicao();
+				
+			</script>
+    </body>
+</html>
